@@ -3,7 +3,7 @@ import * as echarts from "echarts"
 import { Form, Input, Row, Col } from 'antd';
 import './lockAmount.css';
 
-const Title = '每日最大流通量'
+const Title = '每日增量'
 //1 2 3  4  5   
 // 4 7 10 13 16 19 
 // 每日解锁量 初次解锁量  解锁间隔 解锁次数
@@ -27,7 +27,7 @@ const getSeries = (a, b, c, d, e) => {
       }
     }
     const amount = a * (b * 0.01) + g
-    series.push([start + day * 24 * 3600 * 1000, Math.round(prev + amount)])
+    series.push([start + day * 24 * 3600 * 1000, Math.round(amount)])
     if (prev > 35000000) break
     prev+=amount
     day++
@@ -35,7 +35,7 @@ const getSeries = (a, b, c, d, e) => {
   return series
 }
 
-const LockAmount = () => {
+const EveryIncrease = () => {
   const chartRef = useRef()
   const [form] = Form.useForm()
   const [series, setSeries] = useState(getSeries(50000, 5, 3, 60, 1))
@@ -52,7 +52,7 @@ const LockAmount = () => {
   useEffect(() => {
     const chartInstance = echarts.init(chartRef.current)
     const option = {
-      color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
+      color: ['#00DDFF'],
       title: {
         text: Title,
         left: 'center',
@@ -103,9 +103,11 @@ const LockAmount = () => {
       ],
       series: [
         {
-          name: '解锁量',
-          type: 'line',
-          smooth: true,
+          name: '增量',
+          type: 'bar',
+          emphasis: {
+            focus: 'series'
+          },
           data: series
         }
       ]
@@ -166,4 +168,4 @@ const LockAmount = () => {
   </div>
 }
 
-export { LockAmount }
+export { EveryIncrease }

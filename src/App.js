@@ -1,6 +1,6 @@
 import React from 'react'
 import './App.css';
-import { LockAmount } from './charts'
+import { LockAmount, EveryIncrease } from './charts'
 
 function App() {
   
@@ -10,13 +10,7 @@ function App() {
         <LockAmount />
       </div>
       <div className="line-container">
-        <LockAmount />
-      </div>
-      <div className="line-container">
-        <LockAmount />
-      </div>
-      <div className="line-container">
-        <LockAmount />
+        <EveryIncrease />
       </div>
     </div>
   );

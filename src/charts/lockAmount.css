@@ -15,3 +15,8 @@
 .chart-header-label > .ant-form-item-label >label {
   color: #FFFFFF;
 }
+
+.ant-form-inline >.chart-header-label,.ant-form-item {
+  margin-right: 0;
+}
+

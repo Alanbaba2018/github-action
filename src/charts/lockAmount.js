@@ -1,11 +1,39 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
 import * as echarts from "echarts"
+import { Form, Input, Row, Col } from 'antd';
 import './lockAmount.css';
 
-const Title = '每日解锁量'
+const Title = '每日最大流通量'
+// 5w * 5%,  5w * 5%, 5w * 5%, 
+const getSeries = (a, b, c, d) => {
+  const series = []
+  let day = 1
+  const start = +new Date(2022, 7, 1)
+  let prev = 0
+  while(true) {
+    const amount = a * (b * 0.01) + a * Math.floor((day - 1) / c) / d
+    series.push([start + (day - 1) * 24 * 3600 * 1000, Math.round(prev + amount)])
+    if (prev > 35000000) break
+    prev+=amount
+    day++
+  }
+  return series
+}
 
 const LockAmount = () => {
   const chartRef = useRef()
+  const [form] = Form.useForm()
+  const [series, setSeries] = useState(getSeries(5000, 5, 3, 60))
+
+  const onFormChange = () => {
+    console.log(form.getFieldsValue())
+    const { amount, ratio, interval, times } = form.getFieldsValue()
+    if (amount && ratio && interval && times) {
+      setSeries(getSeries(+amount, +ratio, +interval, +times))
+    }
+  }
+  
+
   useEffect(() => {
     const chartInstance = echarts.init(chartRef.current)
     const option = {
@@ -26,13 +54,8 @@ const LockAmount = () => {
           }
         }
       },
-      legend: {
-        show: false
-      },
-      toolbox: {
-        show: false
-      },
       grid: {
+        show: false,
         left: '3%',
         right: '4%',
         bottom: '3%',
@@ -40,49 +63,77 @@ const LockAmount = () => {
       },
       xAxis: [
         {
-          type: 'category',
+          type: 'time',
           boundaryGap: false,
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          splitLine:{
+            show:false
+      　　 }
         }
       ],
       yAxis: [
         {
-          type: 'value'
+          type: 'value',
+          splitLine:{
+            show:false
+      　　 }
         }
       ],
       series: [
         {
-          name: 'Line 1',
+          name: '解锁量',
           type: 'line',
-          stack: 'Total',
           smooth: true,
-          lineStyle: {
-            width: 0
-          },
-          showSymbol: false,
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(128, 255, 165)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(1, 191, 236)'
-              }
-            ])
-          },
           emphasis: {
             focus: 'series'
           },
-          data: [140, 232, 101, 264, 90, 340, 250]
+          data: series
         }
       ]
     }
     chartInstance.setOption(option)
-  }, [])
+  }, [series])
   return <div className="chart-wrap">
+    <div className="chart-header">
+      <Form
+        form={form}
+        layout="inline"
+        initialValues={{ amount: '50000', ratio: '5', interval: '3', times: '60' }}
+        onValuesChange={onFormChange}
+      >
+        <Form.Item name="amount" label="每日产出" className="chart-header-label">
+          <Row>
+            <Col span={18}>
+              <Input size="small" placeholder="daily lock number" defaultValue={50000} />
+            </Col>
+          </Row>
+        </Form.Item>
+        
+        <Form.Item name="ratio" label="首次解锁" className="chart-header-label">
+          <Row>
+            <Col span={12}>
+              <Input size="small" placeholder="First unlock ratio" defaultValue={5} addonAfter="%" />
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item name="interval" label="解锁间隔" className="chart-header-label">
+          <Row>
+            <Col span={12}>
+              <Input size="small" placeholder="unlock interval" defaultValue={3} addonAfter="天" />
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item name="times" label="解锁次数" className="chart-header-label">
+          <Row>
+            <Col span={12}>
+              <Input size="small" placeholder="unlock times" defaultValue={60} addonAfter="天" />
+            </Col>
+          </Row>
+        </Form.Item>
+
+      </Form>
+    </div>
     <div ref={chartRef} className="chart-container" />
   </div>
 }

@@ -1,3 +1,4 @@
+@import '~antd/dist/antd.css';
 .App {
   display: flex;
   flex-wrap: wrap;
@@ -9,5 +10,6 @@
 }
 .line-container {
   width: 50%;
+  height: 400px;
 }
 

@@ -1,7 +1,17 @@
 .chart-wrap {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
   text-align: center;
   color: #FFFFFF;
 }
+.chart-header {
+  height: 60px;
+  padding: 0 4px;
+}
 .chart-container {
-  height: 300px;
+  height: calc(100% - 60px);
+}
+.chart-header-label > .ant-form-item-label >label {
+  color: #FFFFFF;
 }

@@ -1,9 +1,10 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import * as echarts from "echarts"
 import { Form, Input, Row, Col } from 'antd';
 import './lockAmount.css';
 
 const Title = '每日最大流通量'
+
 // 5w * 5%,  5w * 5%, 5w * 5%, 
 const getSeries = (a, b, c, d) => {
   const series = []
@@ -28,7 +29,7 @@ const LockAmount = () => {
   const onFormChange = () => {
     console.log(form.getFieldsValue())
     const { amount, ratio, interval, times } = form.getFieldsValue()
-    if (amount && ratio && interval && times) {
+    if (+amount && +ratio && +interval && +times) {
       setSeries(getSeries(+amount, +ratio, +interval, +times))
     }
   }

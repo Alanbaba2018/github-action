@@ -1,6 +1,6 @@
 import React from 'react'
 import './App.css';
-import { LockAmount, EveryIncrease } from './charts'
+import { LockAmount, EveryIncrease, Kick } from './charts'
 
 function App() {
   
@@ -11,6 +11,9 @@ function App() {
       </div>
       <div className="line-container">
         <EveryIncrease />
+      </div>
+      <div className="line-container">
+        <Kick />
       </div>
     </div>
   );

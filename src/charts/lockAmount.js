@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react'
 import * as echarts from "echarts"
 import { Form, Input, Row, Col } from 'antd';
-import './lockAmount.css';
+import './common-chart.css';
 
 const Title = '每日最大流通量'
 //1 2 3  4  5   

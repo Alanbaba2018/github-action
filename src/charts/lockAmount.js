@@ -4,16 +4,21 @@ import { Form, Input, Row, Col } from 'antd';
 import './lockAmount.css';
 
 const Title = '每日最大流通量'
-
-// 5w * 5%,  5w * 5%, 5w * 5%, 
+//1 2 3  4  5   
+// 4 7 10 13 16 19 
 const getSeries = (a, b, c, d) => {
   const series = []
-  let day = 1
+  let day = 0
   const start = +new Date(2022, 7, 1)
   let prev = 0
   while(true) {
-    const amount = a * (b * 0.01) + a * Math.floor((day - 1) / c) / d
-    series.push([start + (day - 1) * 24 * 3600 * 1000, Math.round(prev + amount)])
+    let e = 0
+    if (day >= c && day % c === 0) {
+      const f = Math.floor(day / c)
+      e = Math.min(d, f ) * c * a * (100 - b) * 0.01  / d
+    }
+    const amount = a * (b * 0.01) + e
+    series.push([start + day * 24 * 3600 * 1000, Math.round(prev + amount)])
     if (prev > 35000000) break
     prev+=amount
     day++
@@ -24,7 +29,7 @@ const getSeries = (a, b, c, d) => {
 const LockAmount = () => {
   const chartRef = useRef()
   const [form] = Form.useForm()
-  const [series, setSeries] = useState(getSeries(5000, 5, 3, 60))
+  const [series, setSeries] = useState(getSeries(50000, 5, 3, 60))
 
   const onFormChange = () => {
     console.log(form.getFieldsValue())

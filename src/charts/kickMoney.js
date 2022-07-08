@@ -9,7 +9,7 @@ const Title = '收益分布'
 const getSeries = (money) => {
   const base = 100
   const E = 2 ** 52
-  const times = [100, 500, 10000, 2000, 50000, 10000]
+  const times = [100, 500, 1000, 2000, 5000, 10000]
   const series = []
 
   const getNumber = () => {

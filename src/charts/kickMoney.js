@@ -21,7 +21,12 @@ const getSeries = (money) => {
     let sum = 0
     for (let i = 0; i < time; i++) {
       const result = getNumber()
-      sum += (spot - result) / base  * money
+      if (spot > result) {
+        sum += (spot - result) / base  * money
+      } else {
+        sum -= money
+      }
+      
     }
     series.push([`${time}次`, sum])
   })

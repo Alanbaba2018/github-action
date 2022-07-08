@@ -92,6 +92,9 @@ const KickMoney = () => {
       yAxis: [
         {
           type: 'value',
+          splitLine:{
+            show:false
+      　　 }
         }
       ],
       series: [

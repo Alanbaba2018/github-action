@@ -6,33 +6,29 @@ import { useDebounce } from '../hooks'
 
 const Title = '收益分布'
 
-const getSeries = (money, step = 20, count = 30) => {
+const getSeries = (money) => {
   const base = 100
   const E = 2 ** 52
-  const times = 10000
+  const times = [100, 500, 10000, 2000, 50000, 10000]
+  const series = []
 
   const getNumber = () => {
     const H = Math.random() * (E - 1)
     return Math.floor((100 * E - H) / (E - H))
   }
   const spot = getNumber()
-  const res = [...new Array(count + 1)].fill(0)
-  let index = 0
-  for (let i = 0; i < times; i++) {
-    const result = getNumber()
-    index = Math.floor((result - base) / step)
-    if (index <= count - 1) {
-      res[index] += (spot - result) * money
-    } else {
-      res[count] += (spot - result) * money
+  times.forEach(time => {
+    let sum = 0
+    for (let i = 0; i < time; i++) {
+      const result = getNumber()
+      sum += (spot - result) / base  * money
     }
-  }
+    series.push([`${time}次`, sum])
+  })
+  
   // 100-200 200-300 300-400 400-500 500-600 >=600
   return {
-    series: res.map((n, index) => {
-      if (index === res.length - 1) return [`X≥${base + index * step}`, n]
-      return [`${base + index * step}≤X<${base + (index + 1) * step}`, n]
-    }),
+    series,
     spot,
   }
 }
@@ -88,7 +84,6 @@ const KickMoney = () => {
       xAxis: [
         {
           type: 'category',
-          boundaryGap: false,
           splitLine:{
             show:false
       　　 }
@@ -97,9 +92,6 @@ const KickMoney = () => {
       yAxis: [
         {
           type: 'value',
-          splitLine:{
-            show:false
-      　　 }
         }
       ],
       series: [

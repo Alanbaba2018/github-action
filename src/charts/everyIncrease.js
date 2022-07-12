@@ -1,6 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
 import * as echarts from "echarts"
-import { Form, Input, Row, Col } from 'antd';
+import { Form, Input, Row, Col, Button } from 'antd';
+import { jsonToExcel } from './util'
 import './common-chart.css';
 
 const Title = '每日增量'
@@ -43,10 +44,38 @@ const EveryIncrease = () => {
   const onFormChange = () => {
     console.log(form.getFieldsValue())
     const { amount, ratio, interval, times, accelerateRate } = form.getFieldsValue()
-    if (+amount && +ratio && +interval && +times && +accelerateRate) {
+    if (amount && ratio && interval && times && accelerateRate) {
       setSeries(getSeries(+amount, +ratio, +interval, +times, +accelerateRate))
     }
   }
+
+  const download = useCallback(() => {
+    const defaultCellStyle = {
+      font: { name: 'Verdana', sz: 13, color: 'FF00FF88' },
+      fill: { fgColor: { rgb: 'FFFFAA00' } }
+    }
+    const opts = {
+      cellStyles: true,
+      defaultCellStyle: defaultCellStyle,
+      showGridLines: false
+    }
+    jsonToExcel({
+      json: series.map(([date, number]) => {
+        const d = new Date(date)
+        const year = d.getFullYear()
+        const month = d.getMonth() + 1
+        const day = d.getDate()
+        return {
+          '日期': `${year}-${month}-${day}`, 
+          '数量': number
+        }
+      }),
+      sheetName: '每日新增量',
+      fileName: '每日新增量.xlsx',
+      opts,
+      retType: 'file'
+    })
+  }, [series])
   
 
   useEffect(() => {
@@ -160,6 +189,10 @@ const EveryIncrease = () => {
               <Input size="small" placeholder="acceleration rate" defaultValue={1} />
             </Col>
           </Row>
+        </Form.Item>
+
+        <Form.Item className="chart-header-label">
+          <Button size="small" type="primary" onClick={download}>下载</Button>
         </Form.Item>
 
       </Form>

@@ -10,10 +10,10 @@ const Title = '收益分布'
 const ExcelData = []
 
 const InitialValue = { 
-  m: { rate: 40, a: 40, b: 30, c: 30 },
-  n: { rate: 30, a: 40, b: 30, c: 30 },
-  p: { rate: 30, a: 40, b: 30, c: 30 },
-  r: { rate: 2, a: 4, b: 6, c: 8 }
+  m: { rate: 60, a: 70, b: 29, c: 1 },
+  n: { rate: 20, a: 80, b: 19, c: 1 },
+  p: { rate: 20, a: 90, b: 9, c: 1 },
+  r: { rate: 2, a: 5, b: 100, c: 0 }
 }
 
 function getRandomUsrs(count, a, b, ratios) {
@@ -27,7 +27,7 @@ function getRandomUsrs(count, a, b, ratios) {
     } else if (i < level2) {
       res.push(100 * ratios[0] + Math.floor(Math.random() * 100 * (ratios[1] - ratios[0])))
     } else {
-      res.push(100 * ratios[1] + Math.floor(Math.random() * (ratios[2] - ratios[1])))
+      res.push(100 * ratios[1] + Math.floor(Math.random() * 100 * (ratios[2] - ratios[1])))
     }
   }
   return res
@@ -39,15 +39,15 @@ const getSeries = params => {
   ExcelData.length = 0
   const base = 100
   const counts = []
-  const loop = 1000
+  const loop = 10000
   const series = []
   let step = 100
-  while(step <= 5000) {
+  while(step <= 2000) {
     counts.push(step)
     if (step >= 1000) {
       step += 1000
     } else {
-      step+=100
+      step+=200
     }
   }
   const ratios = Object.values(params.r)
@@ -78,7 +78,7 @@ const getSeries = params => {
         if (cur > spot) {
           acc += money
         } else {
-          acc +=  (cur - spot) / base * money
+          acc +=  (base - cur) / base * money
         }
         return acc
       }, earn)
@@ -88,7 +88,7 @@ const getSeries = params => {
         if (cur > spot) {
           acc += money
         } else {
-          acc +=  (cur - spot) / base * money
+          acc +=  (base - cur) / base * money
         }
         return acc
       }, earn)
@@ -98,7 +98,7 @@ const getSeries = params => {
         if (cur > spot) {
           acc += money
         } else {
-          acc +=  (cur - spot) / base * money
+          acc +=  (base - cur) / base * money
         }
         return acc
       }, earn)
